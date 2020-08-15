@@ -1,0 +1,166 @@
+<?php
+session_start();
+include_once('includes.php');	
+?>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script type="text/javascript">
+
+		jQuery(function($){
+ 			$('.month').hide();
+ 			$('.month:first').show();
+ 			$('.months a:first').addClass('active');
+ 			var current=1;
+ 			$('.months a').click(function(){
+ 				var month = $(this).attr('id').replace('linkMonth','');
+ 				if(month!=current){
+ 					$('#month'+current).slideUp();
+ 					$('#month'+month).slideDown();
+ 					$('.months a').removeClass('active');
+ 					$('.months a#linkMonth'+month).addClass('active');
+ 					current=month;
+ 				}
+ 				return false;
+ 				});
+
+
+		});
+	</script>
+</head>
+	<header>
+		 <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<link rel="icon" href="./image/hh.jpg" />
+		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="bootstrap/js/bootstrap.js" rel="stylesheet" type="text/css"/>
+		<link href="style.css" rel="stylesheet" type="text/css" media="screen"/>
+
+		<title>Planifier</title>
+	</header>
+	
+	<body>
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+		    
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		      <a class="navbar-brand" href="accueil.php">GDST</a>
+		    </div>
+		
+		    
+		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      <ul class="nav navbar-nav navbar-right">
+		      	<li><a href="accueil.php">Accueil</a></li>
+		      	<li><a href="Planifier.php">Planifier</a></li>
+		      	<li><a href="modifier.php">Modifier votre profil</a></li>
+		        <li><a href="deconnexion.php">Deconnexion</a></li>
+		      </ul>
+		    </div>
+		  </div>
+		</nav>
+		
+
+			<br/>	<br/>
+	        <div class="container">
+			       	<h1 class="index-h1">Planifier votre temps</h1>			       	
+	        </div>
+	       	<br/>	<br/>	
+        
+<div class="container">
+			<?php 
+		     require('date.php');  
+		     $date = new Date();
+		     $year = date('Y');
+		     $dates= $date->getAll($year);
+			?>  
+			<div class="period">
+				<div class="year">
+					<?php echo $year; 
+					?>
+				 </div>
+				<div class="months">
+					<ul>
+						<?php foreach ($date->months as $id=>$m): ?> 
+							<li> <a href="#" id="linkMonth<?php echo $id+1; ?>"><?php echo utf8_encode(substr (utf8_decode($m),0,3));  ?> </a></li>
+						<?php endforeach; ?> 
+					</ul>
+				</div>
+				</br>
+				<?php $dates= current($dates); ?>
+				<?php  foreach($dates as $m=>$days): ?>
+					<div class="month" id ="month<?php echo $m; ?>">
+						<table>
+							<thead>
+								<tr>
+									<?php foreach ($date->days as $d): ?> 
+										<th>
+											<?php echo substr($d,0,3); ?> 
+										</th>
+									<?php endforeach; ?> 
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+								<?php $end= end($days);foreach ($days as $d=>$w): ?> 
+									<?php if($d==1): ?>
+										<td colspan="<?php echo $w-1; ?>" class="padding"></td>
+									<?php endif; ?> 
+									<td>
+										<div class="relative">
+											<div class="day"><?php echo $d; ?> </div>
+										</div>
+									</td>
+ 									<?php if($w==7): ?>
+ 									</tr> <tr>
+ 									<?php endif; ?> 
+								<?php endforeach; ?> 
+								<?php if ($end !=7):  ?> 
+									<td colspan="<?php echo 7-$end; ?> " class="padding"></td>
+								<?php endif; ?> 
+								</tr>
+							</tbody>
+
+						</table>
+					</div>
+				<?php endforeach; ?> 
+			</div>
+			</br>
+			<!--<pre> <?php print_r($dates); ?> </pre>-->
+
+</div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="bootstrap/js/bootstrap.min.js"></script>
+	</body>
+</html>
+
+
+
+css
+.months{}
+.relative{position: relative;}
+.month{ margin-top: 12px; }
+.months ul{ list-style: none;margin: 0px;padding: 0px; }
+.months ul li a{float: left;margin: -1px;padding:0px 15px 0px 0px; color:#43a390;}
+.months ul li a:hover, .months ul li a.active{color:#D90000;}
+table{border-collapse: collapse;}
+table td{border: 1px solid #A3A3A3;width: 80px;height: 80px;}
+table td.padding{ border: none;}
+table td:hover{background:#DFDFDF;cursor: pointer;}
+table th {font-weight: normal;color: black;}
+ table td .day{position: absolute;color: black;bottom: -40px;right: 5px;}
+ table td .events{position: relative;width:79px;height: 0px;margin: -39px;}
+table td .events li{width:10px;height: 10px; float: left;background:gray;}
+table td:hover .events{ position: absolute;left: 582px;top:66px;width: 44px; }
+table td:hover .events li{ height: 40px;line-height: 40px;font-weight: bold;}
+table td:hover .events li:first-child{border-top:1px solid #D6D6D6; }
+table td .daytitle{display: none;}
+table td:hover .daytitle{position: absolute;left: 582px;top:21px;width: 44px;}
+.clear{clear: both;}
